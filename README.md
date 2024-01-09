@@ -1,6 +1,6 @@
-#Send email API
+# Send email API
 
-##Description
+## Description
 
 This is a Flask project to send emails using Sendgrid, include two endpoints.
 One endpoint use a customizing mail and the another one use a template where we send the values with fill it.
@@ -10,7 +10,7 @@ The endpoints include a param `lang` for select language of email:
 
 This because the API is plannning for be used by my portfolio webpage and his functionality of change language.
 
-##Endpoints
+## Endpoints
 The app has only 2 endpoints:
 ```
     POST /send-email
@@ -18,7 +18,7 @@ The app has only 2 endpoints:
 ```
 All fields required
 
-###Examples
+### Examples
 Both endpoints use the same json
 ```
 {
