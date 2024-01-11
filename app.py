@@ -5,10 +5,13 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail, From
 import os
 from models.language import Language
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+cors = CORS(app)
 
 @app.route("/send-email", methods=['POST'])
+@cross_origin()
 def send_email():
 
     payload = request.get_json()

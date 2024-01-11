@@ -8,8 +8,10 @@ from responses import ResponseErrorBadRequest as BadRequest, ResponseOk as Ok, R
 from flask import request
 from sendgrid.helpers.mail import Mail
 from models.template_language import TemplateLanguage
+from flask_cors import cross_origin
 
 @app.route("/send-template-mail", methods=['POST'])
+@cross_origin()
 def send_email_template():
     payload = request.get_json()
     params = [
