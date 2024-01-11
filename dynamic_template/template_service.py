@@ -30,8 +30,9 @@ def send_email_template():
             details=f"Fields: {dif_paramas}"
         )
 
+    my_mail = "manuel_ale94@outlook.com"
     mail = Mail()
-    mail.from_email = Email("manuel_ale94@outlook.com")
+    mail.from_email = Email(f"{my_mail}")
     mail.template_id = 'd-3b901435cfa64a688b71648d16784763'
 
     p = Personalization()
@@ -43,6 +44,7 @@ def send_email_template():
     )
     p.dynamic_template_data = data
     mail.add_personalization(p)
+    mail.add_cc(my_mail)
 
     try:
         sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))

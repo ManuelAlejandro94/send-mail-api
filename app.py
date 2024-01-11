@@ -31,8 +31,10 @@ def send_email():
             details=f"Fields: {dif_paramas}"
         )
 
+    my_mail = "manuel_ale94@outlook.com"
+
     message_mail = Mail(
-        from_email=From('manuel_ale94@outlook.com', "API Portfolio Manuel Alvarez"),
+        from_email=From(f'{my_mail}', "API Portfolio Manuel Alvarez"),
         to_emails=f'{payload["email"]}',
         subject=f'API Portfolio Subject: {payload["subject"]}',
         html_content=Language(
@@ -41,6 +43,7 @@ def send_email():
             message=payload["message"]
         )
     )
+    message_mail.add_cc(my_mail)
 
     try:
         sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
