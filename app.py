@@ -1,66 +1,27 @@
-from flask import Flask, request
-from validations import validate_params
-from responses import ResponseErrorBadRequest as BadRequest, ResponseOk as Ok, ResponseError
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail, From
-import os
-from models.language import Language
-from flask_cors import CORS, cross_origin
+from flask import Flask
+
+from flask_cors import CORS
+from logging.config import dictConfig
+from services import simple_mail, template_mail
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    }},
+    'handlers': {'wsgi': {
+        'class': 'logging.StreamHandler',
+        'stream': 'ext://flask.logging.wsgi_errors_stream',
+        'formatter': 'default'
+    }},
+    'root': {
+        'level': 'INFO',
+        'handlers': ['wsgi']
+    }
+})
 
 app = Flask(__name__)
 cors = CORS(app)
 
-@app.route("/send-email", methods=['POST'])
-@cross_origin()
-def send_email():
-
-    payload = request.get_json()
-    params = [
-        "name",
-        "email",
-        "subject",
-        "message",
-        "lang"
-    ]
-
-    dif_paramas = validate_params(params=params, request=payload)
-    if dif_paramas:
-        return BadRequest.with_results(
-            error=-1,
-            message="Payload incomplete",
-            details=f"Fields: {dif_paramas}"
-        )
-
-    my_mail = "manuel_ale94@outlook.com"
-
-    message_mail = Mail(
-        from_email=From(f'{my_mail}', "API Portfolio Manuel Alvarez"),
-        to_emails=f'{payload["email"]}',
-        subject=f'API Portfolio Subject: {payload["subject"]}',
-        html_content=Language(
-            lang=payload["lang"],
-            name=payload["name"],
-            message=payload["message"]
-        )
-    )
-    message_mail.add_cc(my_mail)
-
-    try:
-        sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
-        response = sg.send(message_mail)
-        if response.status_code != 202:
-            return ResponseError.with_results(
-                error=-1,
-                message="Error sending email",
-                details=response.body
-            )
-
-        return Ok.without_results(
-            code=0,
-            message="Email sended correctly"
-        )
-    except Exception as e:
-        print(e)
-        raise e
-
-import dynamic_template.template_service
+simple_mail.register_routes(app)
+template_mail.register_routes(app)
